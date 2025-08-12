@@ -1,63 +1,66 @@
 #include <stdio.h>
-#include <unistd.h> // Para usar usleep()
+#include <unistd.h> // usleep
 
-// Função para imprimir texto com atraso, caractere por caractere
-void imprimir_com_atraso(const char *texto, int atraso_ms) {
+// Função para imprimir com delay em ms entre caracteres
+void imprimir_com_efeito(const char *texto, int atraso_ms) {
     for (int i = 0; texto[i] != '\0'; i++) {
         printf("%c", texto[i]);
-        fflush(stdout);              // força a impressão imediata do caractere
-        usleep(atraso_ms * 1000);   // atraso em microssegundos
+        fflush(stdout); // força imprimir imediatamente
+        usleep(atraso_ms * 1000); // converte ms para microssegundos
     }
 }
 
+// Funções recursivas para as peças
+void moverTorre(int passos, int atual) {
+    if(atual > passos){
+        return;
+    }
+    imprimir_com_efeito("direita\n", 25);
+    moverTorre(passos, atual + 1);
+}
+
+void moverBispo(int passos, int atual) {
+    if (atual > passos) {
+        return;
+    }
+    // movimento diagonal: um "Cima" e um "Direita" a cada passo
+    imprimir_com_efeito("Cima\n", 25);
+    imprimir_com_efeito("Direita\n", 25);
+    moverBispo(passos, atual + 1);
+}
+
+void moverRainha(int passos, int atual) {
+    if (atual > passos) {
+        return;
+    }
+    imprimir_com_efeito("Esquerda\n", 25);
+    moverRainha(passos, atual + 1);
+}
+
 int main() {
-    // Define o número de casas que cada peça deve andar
     int casasTorre = 5;
     int casasBispo = 5;
     int casasRainha = 8;
-    int casasBaixo = 3;      // movimento do cavalo para baixo
-    int casasEsquerda = 1;   // movimento do cavalo para esquerda
-    int i, j;                // variáveis de controle dos loops
+    int casasCima = 2;
+    int casasDireita = 1;
+    int i, j;
 
-    // Movimento da Torre: 5 casas para a direita usando 'for'
-    imprimir_com_atraso("Movimento da Torre:\n\n", 25);
-    for (i = 1; i <= casasTorre; i++) {
-        imprimir_com_atraso("direita\n", 25);
-    }
+    imprimir_com_efeito("Movimento da Torre\n\n", 25);
+    moverTorre(casasTorre, 1);
+    imprimir_com_efeito("\nMovimento do Bispo\n\n", 25);
+    moverBispo(casasBispo, 1);
+    imprimir_com_efeito("\nMovimentos da Rainha\n\n", 25);
+    moverRainha(casasRainha, 1);
 
-    printf("\n");
-
-    // Movimento do Bispo: 5 casas na diagonal superior direita usando 'while'
-    imprimir_com_atraso("Movimento do Bispo:\n\n", 25);
-    i = 1;
-    while (i <= casasBispo) {
-        imprimir_com_atraso("Cima, Direita\n", 25);
-        i++;
-    }
-
-    printf("\n");
-
-    // Movimento da Rainha: 8 casas para a esquerda usando 'do-while'
-    imprimir_com_atraso("Movimento da Rainha:\n\n", 25);
-    i = 1;
-    do {
-        imprimir_com_atraso("esquerda\n", 25);
-        i++;
-    } while (i <= casasRainha);
-
-    printf("\n");
-
-    // Movimento do Cavalo: 3 casas para baixo e 1 para a esquerda usando loops aninhados
-    imprimir_com_atraso("Movimento do Cavalo:\n\n", 25);
-    for (i = 1; i <= casasBaixo + casasEsquerda; i++) {
-        j = 1;
-        while (j <= 1) {
-            if (i <= casasBaixo) {
-                imprimir_com_atraso("Baixo\n", 25);
-            } else {
-                imprimir_com_atraso("Esquerda\n", 25);
+    imprimir_com_efeito("\nMovimento do Cavalo\n", 25);
+    for (i = 1; i <= casasCima; i++) {
+        imprimir_com_efeito("Cima\n", 25);
+        for (j = 1; j <= casasDireita; j++) {
+            if (i < casasCima) {
+                continue;
             }
-            j++;
+            imprimir_com_efeito("Direita\n", 25);
+            break;
         }
     }
 
